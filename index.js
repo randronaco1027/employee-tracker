@@ -11,9 +11,56 @@ const promptUser = () => {
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role']
         }
     ])
-    .then()
+        .then(data => {
+            console.log(data)
+            if (data.action === "View All Departments") {
+                viewDept()
+            } else if (data.action === "View All Roles") {
+                viewRoles()
+            } else if (data.action === "View All Employees") {
+                viewEmployees()
+            } else if (data.action === "Add A Department") {
+                addDept()
+            } else if (data.action === "Add A Role") {
+                addRole()
+            } else if (data.action === "Add An Employee") {
+                addEmployee()
+            } else if (data.action === "Update An Employee Role") {
+                updateRole()
+            }
+        })
 }
+const viewDept = () => {
+    const sql = `SELECT * FROM dept`;
 
+    db.query(sql, (err, res) => {
+        if (err) {
+            return;
+        }
+        console.table(res)
+        promptUser()
+    });
+}
+const viewRoles = () => {
+    const sql = `SELECT * FROM roles`;
+    db.query(sql, (err, res) => {
+        if (err) {
+            return;
+        }
+        console.table(res)
+        promptUser()
+    });
+}
+const viewEmployees = () => {
+    const sql = `SELECT * FROM employee`;
+    db.query(sql, (err, res) => {
+        if (err) {
+            return;
+        }
+        console.table(res)
+        promptUser()
+    });
+}
 const addDept = () => {
     return inquirer.prompt([
         {
@@ -22,7 +69,9 @@ const addDept = () => {
             message: 'What would you like to name the department?',
         }
     ])
-    .then()
+        .then(data => {
+            console.log(data)
+        })
 }
 
 const addRole = () => {
@@ -43,7 +92,9 @@ const addRole = () => {
             message: 'What department would the role belong to?',
         }
     ])
-    .then()
+        .then(data => {
+            console.log(data)
+        })
 }
 
 const addEmployee = () => {
@@ -69,9 +120,8 @@ const addEmployee = () => {
             message: 'Department of new employee',
         }
     ])
-    .then()
+        .then(data => {
+            console.log(data)
+        })
 }
-// promptUser()
-// .then(data => {
-//     console.log(JSON.stringify(data))
-// })
+promptUser()
