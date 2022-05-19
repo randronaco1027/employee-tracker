@@ -1,4 +1,6 @@
 const inquirer = require('inquirer')
+const db = require('./db/connection')
+const cTable = require('console.table')
 
 const promptUser = () => {
     return inquirer.prompt([
@@ -7,59 +9,69 @@ const promptUser = () => {
             name: 'action',
             message: 'What would you like to do?',
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role']
-        },
+        }
+    ])
+    .then()
+}
+
+const addDept = () => {
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'deptName',
             message: 'What would you like to name the department?',
-            when: (input) => input.action === 'Add A Department'
-        },
+        }
+    ])
+    .then()
+}
+
+const addRole = () => {
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'roleName',
             message: 'What would you like to name the role?',
-            when: (input) => input.action === 'Add A Role'
         },
         {
             type: 'input',
             name: 'roleSalary',
             message: 'What would you like the salary to be?',
-            when: (input) => input.action === 'Add A Role'
         },
         {
             type: 'input',
             name: 'roleDept',
             message: 'What department would the role belong to?',
-            when: (input) => input.action === 'Add A Role'
-        },
+        }
+    ])
+    .then()
+}
+
+const addEmployee = () => {
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'firstName',
             message: 'First name of new employee',
-            when: (input) => input.action === 'Add An Employee'
         },
         {
             type: 'input',
             name: 'lastName',
             message: 'Last name of new employee',
-            when: (input) => input.action === 'Add An Employee'
         },
         {
             type: 'input',
             name: 'employeeRole',
             message: 'Role of new employee',
-            when: (input) => input.action === 'Add An Employee'
         },
         {
             type: 'input',
             name: 'employeeDept',
             message: 'Department of new employee',
-            when: (input) => input.action === 'Add An Employee'
         }
     ])
+    .then()
 }
-
-promptUser()
-.then(data => {
-    console.log(data)
-})
+// promptUser()
+// .then(data => {
+//     console.log(JSON.stringify(data))
+// })
