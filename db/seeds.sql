@@ -8,7 +8,7 @@ VALUES
     ('IT'),
     ('Research');
 
-INSERT INTO roles
+INSERT INTO role
     (title, salary, department_id)
 VALUES
     ('Financial Analyst', 50000, 2),
