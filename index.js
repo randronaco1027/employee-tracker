@@ -89,14 +89,14 @@ const addDept = () => {
 
 const addRole = async () => {
     const sql = `SELECT * FROM dept`
-    const dept = []
+    const deptArray = []
     db.query(sql, (err, data) => {
         data.forEach(department => {
             let deptData = {
                 name: department.name,
                 value: department.id
             }
-            dept.push(deptData);
+            deptArray.push(deptData);
         });
         inquirer.prompt([
             {
@@ -113,7 +113,7 @@ const addRole = async () => {
                 type: 'list',
                 name: 'dept',
                 message: 'What department does this role belong to?',
-                choices: dept
+                choices: deptArray
             }
         ])
             .then(data => {
@@ -132,7 +132,31 @@ const addRole = async () => {
 }
 
 const addEmployee = () => {
-    inquirer.prompt([
+    const sqlRole = `SELECT * FROM role`
+    const sqlMgr = `SELECT * FROM employee`
+    const roleArray = []
+    const mgrArray = []
+    db.query(sqlMgr, (err, empData) => {
+        empData.forEach(employee => {
+            let employeeData = {
+                name: employee.firstName,
+                value: employee.id
+            }
+            mgrArray.push(employeeData)
+        })
+    })
+    db.query(sqlRole, (err, data) => {
+        data.forEach(role => {
+            let roleData = {
+                name: role.title,
+                value: role.id,
+                salary: role.salary,
+                roleDept: role.dept
+            }
+            roleArray.push(roleData);
+        });
+        
+        inquirer.prompt([
         {
             type: 'input',
             name: 'firstName',
@@ -151,9 +175,16 @@ const addEmployee = () => {
         },
         {
             type: 'list',
+            name: 'confirmMgr',
+            message: 'Does this employee have a manager?',
+            choices: ['Yes', 'No']
+        },
+        {
+            type: 'list',
             name: 'employeeMgr',
-            message: 'Manager of new employee',
-            choices: mgrArray
+            message: `Please enter Manager's ID`,
+            choices: mgrArray,
+            when: (input) => input.confirmMgr === 'Yes'
         }
     ])
         .then(data => {
@@ -167,15 +198,39 @@ const addEmployee = () => {
             });
             promptUser()
         })
+    })
 }
 
 const updateRole = () => {
+    const sqlRole = `SELECT * FROM role`
+    const sqlMgr = `SELECT * FROM employee`
+    const roleArray = []
+    const employeeArray = []
+    db.query(sqlMgr, (err, empData) => {
+        empData.forEach(employee => {
+            let employeeData = {
+                name: employee.firstName,
+                value: employee.id
+            }
+            employeeArray.push(employeeData)
+        })
+    })
+    db.query(sqlRole, (err, data) => {
+        data.forEach(role => {
+            let roleData = {
+                name: role.title,
+                value: role.id,
+                salary: role.salary,
+                roleDept: role.dept
+            }
+            roleArray.push(roleData);
+        });
     inquirer.prompt([
         {
             type: 'list',
             name: 'updateEmp',
-            message: 'Which employee would you like to update?',
-            choices: employeeList
+            message: 'Select the employee ID you would like to update',
+            choices: employeeArray
         },
         {
             type: 'list',
@@ -186,15 +241,16 @@ const updateRole = () => {
     ])
         .then(data => {
             console.log(data)
-            // const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-            // const params = [data.firstName, data.lastName, data.employeeRole, data.employeeMgr]
-            // db.query(sql, params, (err, res) => {
-            //     if (err) {
-            //         return
-            //     }
-            // });
-            // promptUser()
+            const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+            const params = [data.updateRole, data.updateEmp]
+            db.query(sql, params, (err, res) => {
+                if (err) {
+                    return
+                }
+            });
+            promptUser()
         })
+    })
 }
 
 promptUser()
