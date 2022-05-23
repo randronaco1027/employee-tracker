@@ -12,7 +12,7 @@ const promptUser = () => {
         }
     ])
         .then(data => {
-            console.log(data)
+            // List of all options for user
             if (data.action === "View All Departments") {
                 viewDept()
             } else if (data.action === "View All Roles") {
@@ -37,6 +37,7 @@ const promptUser = () => {
         })
 }
 
+// View a list of all the deptartments by ID
 const viewDept = () => {
     const sql = `SELECT dept.id AS ID, dept.name AS Dept FROM dept`;
 
@@ -48,6 +49,8 @@ const viewDept = () => {
         promptUser()
     });
 }
+
+// View a list of all the roles by ID
 const viewRoles = () => {
     const sql = `SELECT role.id AS ID, role.title AS Title, role.salary AS Salary, dept.name AS Dept FROM role INNER JOIN dept ON role.department_id = dept.id`;
     db.query(sql, (err, res) => {
@@ -58,6 +61,8 @@ const viewRoles = () => {
         promptUser()
     });
 }
+
+// View a list of all the employees by ID
 const viewEmployees = () => {
     const sql = `SELECT employee.id AS ID, employee.first_name as First, employee.last_name AS Last, role.title AS Title, role.salary AS Salary, dept.name AS Dept, employee.manager_id AS Manager FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN dept ON role.department_id = dept.id`;
     db.query(sql, (err, res) => {
@@ -69,8 +74,8 @@ const viewEmployees = () => {
     });
 }
 
+// View a list of all employees by department name
 const employeesByDept = () => {
-
     const sql = `SELECT dept.name AS Dept, employee.id AS Emp_ID, employee.first_name as First, employee.last_name AS Last, role.title AS Title, role.salary AS Salary FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN dept ON role.department_id = dept.id ORDER BY dept.name`;
     db.query(sql, (err, res) => {
         if (err) {
@@ -81,8 +86,8 @@ const employeesByDept = () => {
     });
 }
 
+// View a list of all employees by manager ID
 const employeesByMgr = () => {
-
     const sql = `SELECT employee.manager_id AS Manager, employee.first_name as First, employee.last_name AS Last, role.title AS Title, role.salary AS Salary FROM employee INNER JOIN role ON employee.role_id = role.id ORDER BY employee.manager_id`;
     db.query(sql, (err, res) => {
         if (err) {
@@ -93,6 +98,7 @@ const employeesByMgr = () => {
     });
 }
 
+// Add a dept to the SQL database
 const addDept = () => {
     inquirer.prompt([
         {
@@ -114,6 +120,7 @@ const addDept = () => {
         })
 }
 
+// Add a role to the SQL database
 const addRole = async () => {
     const sql = `SELECT * FROM dept`
     const deptArray = []
@@ -158,6 +165,7 @@ const addRole = async () => {
     })
 }
 
+// Add an employee to the SQL database
 const addEmployee = () => {
     const sqlRole = `SELECT * FROM role`
     const sqlMgr = `SELECT * FROM employee`
@@ -228,6 +236,7 @@ const addEmployee = () => {
     })
 }
 
+// Update a role for an employee
 const updateRole = () => {
     const sqlRole = `SELECT * FROM role`
     const sqlEmp = `SELECT * FROM employee`
